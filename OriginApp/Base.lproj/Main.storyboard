@@ -77,10 +77,10 @@
             </objects>
             <point key="canvasLocation" x="135.1145038167939" y="776.76056338028172"/>
         </scene>
-        <!--View Controller-->
+        <!--Result List View Controller-->
         <scene sceneID="mjS-jz-wb2">
             <objects>
-                <viewController id="6Rr-8z-v8T" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ResultList" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6Rr-8z-v8T" customClass="ResultListViewController" customModule="OriginApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="OsO-yA-ZOw">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -93,10 +93,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhV-V5-GEw">
-                                <rect key="frame" x="156.66666666666666" y="551" width="80" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="80" id="66p-gm-Tgs"/>
-                                </constraints>
+                                <rect key="frame" x="176" y="551" width="41.333333333333343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -112,6 +109,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="hZ3-MP-uGJ"/>
+                    <connections>
+                        <outlet property="imageView" destination="CPG-0n-fR7" id="VB4-KR-akL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MzG-v0-6WY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
