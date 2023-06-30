@@ -7,13 +7,16 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController{
     
-    let RiotAPI = "RGAPI-0e5284f9-1316-4c40-b620-48d2604f81f3"
+    let RiotAPI = "RGAPI-ca57e04b-d246-4504-ad16-a5c92f3ca65e"
+    var test = ""
+    let dataclass = DataClass.instance
+    //let dataclass = DataClass()
     
     @IBOutlet weak var SummonerNameTextField: UITextField!
     @IBAction func searchButton(_ sender: Any) {
-        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "ResultList") as! ResultListViewController
+        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "MatchList") as! MatchListController
         var SummonerNameResult:[String:Any] = ["":""]
         var SummonerId:Int = 0
         var matchId:[String] = [""]
@@ -28,20 +31,31 @@ class ViewController: UIViewController {
                     self.getmatchResultFromAPI(matchId: matchId[0]){
                         returnData in
                         matchResult = returnData as! [String:Any]
-                        nextVC.imagename = "ttest"
+                        
                         let metadata = matchResult["metadata"] as! [String:Any]
                         let participants = metadata["participants"] as! [String]
                         let uidIndex:Int = participants.firstIndex(of: SummonerNameResult["puuid"] as! String)!
-                        print(uidIndex)
+                        //print(uidIndex)
                         
                         let info = matchResult["info"] as! [String:Any]
-                        let i_participants = info["participants"]
-                        print(matchResult)
-                        /*
-                        DispatchQueue.main.async {
-                            self.performSegue(withIdentifier: "moveChampionImage", sender: self)
+                        let i_participants = info["participants"] as! [[String:Any]]
+                        //print(i_participants[uidIndex])
+                        let u_championName = i_participants[uidIndex]["championName"] as! String
+                        //print(championName)
+                        for i in 0..<10{
+                            self.dataclass.championName[i] = i_participants[i]["championName"] as! String
+                            //self.dataclass.championName.append(i_participants[i]["championName"] as! String)
                         }
-                         */
+                        
+                        /*
+                        for i in 0..<10{
+                            self.dataclass.championName[i] = i_participants[i]["championName"] as! String
+                        }
+                        */
+                        print(self.dataclass.championName)
+                        DispatchQueue.main.async {
+                            self.present(nextVC, animated: true, completion: nil)
+                        }
                     }
                 }
             }
@@ -51,6 +65,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+    }
+    func showImage(imageView: UIImageView, url: String) {
+        let url = URL(string: url)
+        do {
+            let data = try Data(contentsOf: url!)
+            let image = UIImage(data: data)
+            imageView.image = image
+        } catch let err {
+            print("Error: \(err.localizedDescription)")
+        }
     }
     
     func getpuuidFromAPI(SummonerName: String,completion: @escaping (_ String:Any)->Void){
@@ -106,7 +130,7 @@ class ViewController: UIViewController {
             // コンソールに出力
             do{
                 let matchResult = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                //print(matchResult) // Jsonの中身を表示
+                print(matchResult) // Jsonの中身を表示
                 //completion((matchResult as AnyObject).data(using: .utf8))
                 completion(matchResult)
                 semaphore.signal()
