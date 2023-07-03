@@ -11,7 +11,7 @@ class DataClass : NSObject {
     
     static let instance = DataClass()
     var puuid:[String] = ["","","","","","","","","",""]
-    var championName:[String] = ["","","","","","","","","",""]
-    var summonerName:[String] = ["","","","","","","","","",""]
-    var summonerName2:[[String]] = []
+    //var championName:[String] = ["","","","","","","","","",""]
+    var championName = [[String]]()
+    var championName2:[String] = ["","","","","","","","","",""]
 }

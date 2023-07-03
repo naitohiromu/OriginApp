@@ -9,7 +9,7 @@ import UIKit
 
 class ViewController: UIViewController{
     
-    let RiotAPI = "RGAPI-ca57e04b-d246-4504-ad16-a5c92f3ca65e"
+    let RiotAPI = ""
     var test = ""
     let dataclass = DataClass.instance
     //let dataclass = DataClass()
@@ -22,12 +22,16 @@ class ViewController: UIViewController{
         var matchId:[String] = [""]
         var matchResult:[String:Any] = ["":""]
         if SummonerNameTextField.text != nil{
+            self.dataclass.championName = [[String]]()
+            self.dataclass.championName2 = ["","","","","","","","","",""]
             getpuuidFromAPI(SummonerName: SummonerNameTextField.text!) { returnData in
                 SummonerNameResult = returnData as! [String : Any] //<-実際のコードでは`String`型の変数に`data`なんて命名は避けましょう
                 //print("\(SummonerNameResult["puuid"] as! String)")
                 
                 self.getmatchIdFromAPI(puuid: SummonerNameResult["puuid"] as! String) { returnData in
                     matchId = returnData as! [String]
+                    
+                    
                     self.getmatchResultFromAPI(matchId: matchId[0]){
                         returnData in
                         matchResult = returnData as! [String:Any]
@@ -35,18 +39,14 @@ class ViewController: UIViewController{
                         let metadata = matchResult["metadata"] as! [String:Any]
                         let participants = metadata["participants"] as! [String]
                         let uidIndex:Int = participants.firstIndex(of: SummonerNameResult["puuid"] as! String)!
-                        //print(uidIndex)
                         
                         let info = matchResult["info"] as! [String:Any]
                         let i_participants = info["participants"] as! [[String:Any]]
-                        //print(i_participants[uidIndex])
                         let u_championName = i_participants[uidIndex]["championName"] as! String
-                        //print(championName)
                         for i in 0..<10{
-                            self.dataclass.championName[i] = i_participants[i]["championName"] as! String
-                            //self.dataclass.championName.append(i_participants[i]["championName"] as! String)
+                            self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
                         }
-                        
+                        self.dataclass.championName.append(self.dataclass.championName2)
                         /*
                         for i in 0..<10{
                             self.dataclass.championName[i] = i_participants[i]["championName"] as! String

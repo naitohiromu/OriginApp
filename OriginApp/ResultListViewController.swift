@@ -14,7 +14,7 @@ class ResultListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print(dataclass.championName)
-        self.showImage(imageView: imageView, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[3]+".png")
+        //self.showImage(imageView: imageView, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[3]+".png")
     }
     
     private func showImage(imageView: UIImageView, imageUrl: String) {

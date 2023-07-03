@@ -17,7 +17,7 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 3
     }
 
     
@@ -33,23 +33,46 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         let cellSize:CGFloat = self.view.bounds.width/5
 
         //print(self.view.bounds.width)
-        print(cellSize)
-        
+        //print(cellSize)
+        print(CGSize(width: cellSize, height: cellSize*2))
         // 正方形で返すためにwidth,heightを同じにする
-        return CGSize(width: cellSize, height: 139.0)
+        return CGSize(width: cellSize, height: cellSize*2)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         //storyboard上のセルを生成　storyboardのIdentifierで付けたものをここで設定する
         let cell:UICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath)
-        let championImage = cell.contentView.viewWithTag(1) as! UIImageView
-        let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
-        let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
-        let championname = cell.contentView.viewWithTag(4) as! UILabel
-        
-        self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[indexPath.row]+".png")
-        
-        championname.text = dataclass.championName[indexPath.row]
+        switch(indexPath.section){
+        case 0:
+            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
+            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
+            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
+            let championname = cell.contentView.viewWithTag(4) as! UILabel
+            
+            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
+            
+            championname.text = dataclass.championName[0][indexPath.row]
+        case 1:
+            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
+            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
+            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
+            let championname = cell.contentView.viewWithTag(4) as! UILabel
+            
+            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
+            
+            championname.text = dataclass.championName[0][indexPath.row]
+        case 2:
+            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
+            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
+            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
+            let championname = cell.contentView.viewWithTag(4) as! UILabel
+            
+            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
+            
+            championname.text = dataclass.championName[0][indexPath.row]
+        default:
+            print("section error")
+        }
         return cell
     }
     
@@ -88,7 +111,7 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(dataclass.championName)
+        print(dataclass.championName2)
         // Do any additional setup after loading the view.
     }
 
