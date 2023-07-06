@@ -23,9 +23,18 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader", for: indexPath) as? SectionHeader
         
-        headerView!.backgroundColor = UIColor.white
+        //print(indexPath.section)
         headerView?.sectionHeader.text = "\(self.dataclass.matchTimes[indexPath.section] / 60)分\(self.dataclass.matchTimes[indexPath.section] % 60)秒"
-        //sectionHeader.text = "test"
+        //print(self.dataclass.championName)
+        self.showImage(imageView: headerView!.sectionImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+self.dataclass.championName[indexPath.section][self.dataclass.SNpositionholder[indexPath.section]]+".png")
+        
+        if(self.dataclass.WinOrLose2[indexPath.section]){
+            headerView?.backgroundColor = UIColor.systemBlue
+            headerView!.sectionWL.text = "Win"
+        }else{
+            headerView?.backgroundColor = UIColor.systemPink
+            headerView!.sectionWL.text = "Lose"
+        }
         return headerView!
     }
     
@@ -39,7 +48,7 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         //let cellSize:CGFloat = self.view.bounds.width/5 - horizontalSpace*2
 
         let cellSize_width:CGFloat = self.view.bounds.width/5 - horizontalSpace*2
-        let cellSize_height:CGFloat = self.view.bounds.height/6
+        let cellSize_height:CGFloat = self.view.bounds.height/7
         
         //print(self.view.bounds.width)
         //print(cellSize)
@@ -79,15 +88,15 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
                 for i in 0..<10{
                     self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
                     self.dataclass.summonerNames2[i].append(i_participants[i]["summonerName"] as! String)
-                    self.dataclass.WinOrLose2.append(i_participants[i]["win"] as! Bool)
                 }
+                self.dataclass.SNpositionholder.append(uidIndex)
+                self.dataclass.WinOrLose2.append(i_participants[uidIndex]["win"] as! Bool)
                 self.dataclass.championName.append(self.dataclass.championName2)
                 self.dataclass.summonerNames.append(self.dataclass.summonerNames2)
-                self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
+                //self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
                 //print("chanpionname:\(self.dataclass.championName)")
                 self.dataclass.championName2 = ["","","","","","","","","",""]
                 self.dataclass.summonerNames2 = ["","","","","","","","","",""]
-                self.dataclass.WinOrLose2 = []
             }
                 
             
@@ -102,11 +111,13 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         championname.text = self.dataclass.championName[indexPath.section][indexPath.row]
         summonername.text = self.dataclass.summonerNames[indexPath.section][indexPath.row]
         
+        /*
         if(self.dataclass.WinOrLose[indexPath.section][indexPath.row]){
             cell.backgroundColor = UIColor.blue
         }else{
             cell.backgroundColor = UIColor.red
         }
+         */
         return cell
     }
     

@@ -9,12 +9,13 @@ import UIKit
 
 class ViewController: UIViewController{
     
-    var test = ""
+    //var test = ""
     let dataclass = DataClass.instance
     //let dataclass = DataClass()
     
     @IBOutlet weak var SummonerNameTextField: UITextField!
     @IBAction func searchButton(_ sender: Any) {
+        
         let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "MatchList") as! MatchListController
         var SummonerNameResult:[String:Any] = ["":""]
         var SummonerId:Int = 0
@@ -24,11 +25,25 @@ class ViewController: UIViewController{
             self.dataclass.summonerName = SummonerNameTextField.text!
             self.dataclass.championName = [[String]]()
             self.dataclass.matchTimes = []
+            self.dataclass.SNpositionholder = []
             self.dataclass.summonerNames = [[String]]()
             self.dataclass.championName2 = ["","","","","","","","","",""]
-            self.dataclass.WinOrLose = [[Bool]]()
+            self.dataclass.sort = []
+            //self.dataclass.WinOrLose = [[Bool]]()
             self.dataclass.WinOrLose2 = []
             getpuuidFromAPI(SummonerName: self.dataclass.summonerName) { returnData in
+                var status = returnData as! [String : Any]
+                if(status["status"] == nil){
+                    DispatchQueue.main.async {
+                        Toast.show("OK", self.view)
+                    }
+                }else{
+                    var test = status["status"] as! [String : Any]
+                    DispatchQueue.main.async {
+                        Toast.show(test["message"] as! String, self.view)
+                    }
+                    return
+                }
                 SummonerNameResult = returnData as! [String : Any]
                 //print("\(SummonerNameResult["puuid"] as! String)")
                 self.dataclass.puuid = SummonerNameResult["puuid"] as! String
@@ -36,44 +51,39 @@ class ViewController: UIViewController{
                 self.getmatchIdFromAPI(puuid: self.dataclass.puuid) { returnData in
                     self.dataclass.matchId = returnData as! [String]
                     
-                    for j in 0..<5{
-                    self.getmatchResultFromAPI(matchId: self.dataclass.matchId[j]){
-                        returnData in
-                        matchResult = returnData as! [String:Any]
-                        
-                        var metadata = matchResult["metadata"] as! [String:Any]
-                        var participants = metadata["participants"] as! [String]
-                        var uidIndex:Int = participants.firstIndex(of: SummonerNameResult["puuid"] as! String)!
-                        
-                        var info = matchResult["info"] as! [String:Any]
-                        var i_participants = info["participants"] as! [[String:Any]]
-                        var u_championName = i_participants[uidIndex]["championName"] as! String
-                        self.dataclass.matchTimes.append(info["gameDuration"] as! Int)
-                        for i in 0..<10{
-                            self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
-                            self.dataclass.summonerNames2[i].append(i_participants[i]["summonerName"] as! String)
-                            self.dataclass.WinOrLose2.append(i_participants[i]["win"] as! Bool)
+                    for j in 0..<4{
+                        self.getmatchResultFromAPI(matchId: self.dataclass.matchId[j]){
+                            returnData in
+                            matchResult = returnData as! [String:Any]
+                            
+                            var metadata = matchResult["metadata"] as! [String:Any]
+                            var participants = metadata["participants"] as! [String]
+                            var uidIndex:Int = participants.firstIndex(of: SummonerNameResult["puuid"] as! String)!
+                            
+                            var info = matchResult["info"] as! [String:Any]
+                            var i_participants = info["participants"] as! [[String:Any]]
+                            var u_championName = i_participants[uidIndex]["championName"] as! String
+                            self.dataclass.matchTimes.append(info["gameDuration"] as! Int)
+                            for i in 0..<10{
+                                self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
+                                self.dataclass.summonerNames2[i].append(i_participants[i]["summonerName"] as! String)
+                            }
+                            self.dataclass.SNpositionholder.append(uidIndex)
+                            self.dataclass.WinOrLose2.append(i_participants[uidIndex]["win"] as! Bool)
+                            self.dataclass.championName.append(self.dataclass.championName2)
+                            self.dataclass.summonerNames.append(self.dataclass.summonerNames2)
+                            self.dataclass.sort.append(j)
+                            //self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
+                            print(j,self.dataclass.championName2)
+                            //print("chanpionname:\(self.dataclass.championName)")
+                            self.dataclass.championName2 = ["","","","","","","","","",""]
+                            self.dataclass.summonerNames2 = ["","","","","","","","","",""]
+                            //print(j)
+                            
                         }
-                        self.dataclass.championName.append(self.dataclass.championName2)
-                        self.dataclass.summonerNames.append(self.dataclass.summonerNames2)
-                        self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
-                        //print("chanpionname:\(self.dataclass.championName)")
-                        self.dataclass.championName2 = ["","","","","","","","","",""]
-                        self.dataclass.summonerNames2 = ["","","","","","","","","",""]
-                        self.dataclass.WinOrLose2 = []
-                        //DispatchQueue.main.async {
-                        //    self.present(nextVC, animated: true, completion: nil)
-                        //}
-                        /*
-                         for i in 0..<10{
-                         self.dataclass.championName[i] = i_participants[i]["championName"] as! String
-                         }
-                         */
-                        
-                    }
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now()+2.0) {
-                        print(self.dataclass.WinOrLose)
+                        print(self.dataclass.sort)
                         self.present(nextVC, animated: true, completion: nil)
                     }
                     //print(self.dataclass.championName)
@@ -168,7 +178,7 @@ class ViewController: UIViewController{
         })
         task.resume()
     }
-    
+    /*
     func getmatchResultFromAPI(matchId: String,completion: @escaping (_ String:Any)->Void){
         let semaphore = DispatchSemaphore(value: 0)
         //let RiotAPI = "RGAPI-e31c8d55-ee6a-4a91-95ea-1caab6e3a0a0"
@@ -188,9 +198,36 @@ class ViewController: UIViewController{
                 semaphore.signal()
             }
         })
+        //semaphore.wait()
         task.resume()
+        //semaphore.wait()
         
     }
+    */
+    func getmatchResultFromAPI(matchId: String,completion: @escaping (_ String:Any)->Void){
+        let semaphore = DispatchSemaphore(value: 0)
+        let url: URL = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/"+matchId+"?api_key="+self.dataclass.RiotAPI)!
+        let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
+            // コンソールに出力
+            do{
+                let matchResult = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
+                //print(matchResult) // Jsonの中身を表示
+                //completion((matchResult as AnyObject).data(using: .utf8))
+                completion(matchResult)
+                semaphore.signal()
+                //print(type(of: couponData))
+            }catch {
+                print(error)
+                completion("")
+                semaphore.signal()
+            }
+        })
+        //semaphore.wait()
+        task.resume()
+        //semaphore.wait()
+        
+    }
+    
     func urlEncode(beforeText: String) -> String {
         // RFC3986 に準拠
         // 変換対象外とする文字列（英数字と-._~）

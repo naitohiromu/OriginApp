@@ -19,8 +19,11 @@ class DataClass : NSObject {
     var WinOrLose2:[Bool] = []
     var summonerNames2:[String] = ["","","","","","","","","",""]
     var championName2:[String] = ["","","","","","","","","",""]
+    var sort:[Int] = []
     var summonerName = ""
     var puuid = ""
+    var SNpositionholder:[Int] = []
     var matchId:[String] = [""]
     var RiotAPI = ""
+    var test:[String:Any] = [:]
 }

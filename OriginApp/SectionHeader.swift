@@ -9,5 +9,7 @@ import UIKit
 
 class SectionHeader: UICollectionReusableView {
     @IBOutlet weak var sectionHeader: UILabel!
+    @IBOutlet weak var sectionWL: UILabel!
     
+    @IBOutlet weak var sectionImage: UIImageView!
 }
