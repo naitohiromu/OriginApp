@@ -13,6 +13,11 @@ class DataClass : NSObject {
     //var puuid:[String] = ["","","","","","","","","",""]
     //var championName:[String] = ["","","","","","","","","",""]
     var championName = [[String]]()
+    var summonerNames = [[String]]()
+    var matchTimes:[Int] = []
+    var WinOrLose = [[Bool]]()
+    var WinOrLose2:[Bool] = []
+    var summonerNames2:[String] = ["","","","","","","","","",""]
     var championName2:[String] = ["","","","","","","","","",""]
     var summonerName = ""
     var puuid = ""

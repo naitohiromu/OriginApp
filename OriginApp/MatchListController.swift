@@ -20,6 +20,14 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         return 100
     }
 
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SectionHeader", for: indexPath) as? SectionHeader
+        
+        headerView!.backgroundColor = UIColor.white
+        headerView?.sectionHeader.text = "\(self.dataclass.matchTimes[indexPath.section] / 60)分\(self.dataclass.matchTimes[indexPath.section] % 60)秒"
+        //sectionHeader.text = "test"
+        return headerView!
+    }
     
     //セルのサイズを指定する処理
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -67,13 +75,19 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
                 var info = matchResult["info"] as! [String:Any]
                 var i_participants = info["participants"] as! [[String:Any]]
                 var u_championName = i_participants[uidIndex]["championName"] as! String
+                self.dataclass.matchTimes.append(info["gameDuration"] as! Int)
                 for i in 0..<10{
                     self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
+                    self.dataclass.summonerNames2[i].append(i_participants[i]["summonerName"] as! String)
+                    self.dataclass.WinOrLose2.append(i_participants[i]["win"] as! Bool)
                 }
                 self.dataclass.championName.append(self.dataclass.championName2)
-                print("chanpionname:\(self.dataclass.championName)")
+                self.dataclass.summonerNames.append(self.dataclass.summonerNames2)
+                self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
+                //print("chanpionname:\(self.dataclass.championName)")
                 self.dataclass.championName2 = ["","","","","","","","","",""]
-                
+                self.dataclass.summonerNames2 = ["","","","","","","","","",""]
+                self.dataclass.WinOrLose2 = []
             }
                 
             
@@ -82,43 +96,17 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         //let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
         //let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
         let championname = cell.contentView.viewWithTag(4) as! UILabel
+        let summonername = cell.contentView.viewWithTag(5) as! UILabel
         
         self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[indexPath.section][indexPath.row]+".png")
         championname.text = self.dataclass.championName[indexPath.section][indexPath.row]
+        summonername.text = self.dataclass.summonerNames[indexPath.section][indexPath.row]
         
-        /*
-        switch(indexPath.section){
-        case 0:
-            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
-            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
-            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
-            let championname = cell.contentView.viewWithTag(4) as! UILabel
-            
-            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
-            
-            championname.text = dataclass.championName[0][indexPath.row]
-        case 1:
-            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
-            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
-            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
-            let championname = cell.contentView.viewWithTag(4) as! UILabel
-            
-            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
-            
-            championname.text = dataclass.championName[0][indexPath.row]
-        case 2:
-            let championImage = cell.contentView.viewWithTag(1) as! UIImageView
-            let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
-            let FsummonerspellImage = cell.contentView.viewWithTag(3) as! UIImageView
-            let championname = cell.contentView.viewWithTag(4) as! UILabel
-            
-            self.showImage(imageView: championImage, imageUrl: "http://ddragon.leagueoflegends.com/cdn/13.11.1/img/champion/"+dataclass.championName[0][indexPath.row]+".png")
-            
-            championname.text = dataclass.championName[0][indexPath.row]
-        default:
-            print("section error")
+        if(self.dataclass.WinOrLose[indexPath.section][indexPath.row]){
+            cell.backgroundColor = UIColor.blue
+        }else{
+            cell.backgroundColor = UIColor.red
         }
-        */
         return cell
     }
     

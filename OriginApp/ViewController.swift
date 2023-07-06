@@ -9,7 +9,6 @@ import UIKit
 
 class ViewController: UIViewController{
     
-    //let RiotAPI = "RGAPI-9ecfba04-7d95-4e01-9428-54520f109f6b"
     var test = ""
     let dataclass = DataClass.instance
     //let dataclass = DataClass()
@@ -24,9 +23,13 @@ class ViewController: UIViewController{
         if SummonerNameTextField.text != nil{
             self.dataclass.summonerName = SummonerNameTextField.text!
             self.dataclass.championName = [[String]]()
+            self.dataclass.matchTimes = []
+            self.dataclass.summonerNames = [[String]]()
             self.dataclass.championName2 = ["","","","","","","","","",""]
+            self.dataclass.WinOrLose = [[Bool]]()
+            self.dataclass.WinOrLose2 = []
             getpuuidFromAPI(SummonerName: self.dataclass.summonerName) { returnData in
-                SummonerNameResult = returnData as! [String : Any] //<-実際のコードでは`String`型の変数に`data`なんて命名は避けましょう
+                SummonerNameResult = returnData as! [String : Any]
                 //print("\(SummonerNameResult["puuid"] as! String)")
                 self.dataclass.puuid = SummonerNameResult["puuid"] as! String
                 
@@ -45,12 +48,19 @@ class ViewController: UIViewController{
                         var info = matchResult["info"] as! [String:Any]
                         var i_participants = info["participants"] as! [[String:Any]]
                         var u_championName = i_participants[uidIndex]["championName"] as! String
+                        self.dataclass.matchTimes.append(info["gameDuration"] as! Int)
                         for i in 0..<10{
                             self.dataclass.championName2[i].append(i_participants[i]["championName"] as! String)
+                            self.dataclass.summonerNames2[i].append(i_participants[i]["summonerName"] as! String)
+                            self.dataclass.WinOrLose2.append(i_participants[i]["win"] as! Bool)
                         }
                         self.dataclass.championName.append(self.dataclass.championName2)
+                        self.dataclass.summonerNames.append(self.dataclass.summonerNames2)
+                        self.dataclass.WinOrLose.append(self.dataclass.WinOrLose2)
                         //print("chanpionname:\(self.dataclass.championName)")
                         self.dataclass.championName2 = ["","","","","","","","","",""]
+                        self.dataclass.summonerNames2 = ["","","","","","","","","",""]
+                        self.dataclass.WinOrLose2 = []
                         //DispatchQueue.main.async {
                         //    self.present(nextVC, animated: true, completion: nil)
                         //}
@@ -63,6 +73,7 @@ class ViewController: UIViewController{
                     }
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now()+2.0) {
+                        print(self.dataclass.WinOrLose)
                         self.present(nextVC, animated: true, completion: nil)
                     }
                     //print(self.dataclass.championName)
