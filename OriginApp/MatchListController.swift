@@ -65,7 +65,7 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
         //print("Num: \(indexPath.row)")
         //print("SectionNum:\(indexPath.section)")
         //print(self.dataclass.championName.count)
-        if(self.dataclass.championName.count - indexPath.section <= 3 && self.dataclass.championName.count <= 100 && indexPath.row == 1){
+        if(self.dataclass.championName.count - indexPath.section <= 4 && self.dataclass.championName.count <= 100 && indexPath.row == 1){
             var SummonerNameResult:[String:Any] = ["":""]
             var SummonerId:Int = 0
             //var matchId:[String] = [""]
@@ -98,8 +98,6 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
                 self.dataclass.championName2 = ["","","","","","","","","",""]
                 self.dataclass.summonerNames2 = ["","","","","","","","","",""]
             }
-                
-            
         }
         let championImage = cell.contentView.viewWithTag(1) as! UIImageView
         //let DsummonerspellImage = cell.contentView.viewWithTag(2) as! UIImageView
@@ -173,7 +171,6 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     func getpuuidFromAPI(SummonerName: String,completion: @escaping (_ String:Any)->Void){
         let semaphore = DispatchSemaphore(value: 0)
         let SummonerId = self.dataclass.summonerName
-        //let RiotAPI = "RGAPI-e31c8d55-ee6a-4a91-95ea-1caab6e3a0a0"
         
         let SummonerNameUrl: URL = URL(string: "https://jp1.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+SummonerId+"?api_key="+self.dataclass.RiotAPI)!
         let SummonerNametask: URLSessionTask = URLSession.shared.dataTask(with: SummonerNameUrl, completionHandler: {(data, response, error) in
@@ -196,7 +193,6 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     
     func getmatchIdFromAPI(puuid: String,completion: @escaping (_ String:Any)->Void){
         let semaphore = DispatchSemaphore(value: 0)
-        //let RiotAPI = "RGAPI-e31c8d55-ee6a-4a91-95ea-1caab6e3a0a0"
         let url: URL = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/"+puuid+"/ids?queue=430&type=normal&start=0&count=100&api_key="+self.dataclass.RiotAPI)!
         let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
             // コンソールに出力
@@ -217,7 +213,6 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
     
     func getmatchResultFromAPI(matchId: String,completion: @escaping (_ String:Any)->Void){
         let semaphore = DispatchSemaphore(value: 0)
-        //let RiotAPI = "RGAPI-e31c8d55-ee6a-4a91-95ea-1caab6e3a0a0"
         let url: URL = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/"+matchId+"?api_key="+self.dataclass.RiotAPI)!
         let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
             // コンソールに出力
@@ -235,7 +230,6 @@ class MatchListController: UIViewController,UICollectionViewDelegate,UICollectio
             }
         })
         task.resume()
-        
     }
      
 }

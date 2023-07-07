@@ -51,7 +51,7 @@ class ViewController: UIViewController{
                 self.getmatchIdFromAPI(puuid: self.dataclass.puuid) { returnData in
                     self.dataclass.matchId = returnData as! [String]
                     
-                    for j in 0..<4{
+                    for j in 0..<5{
                         self.getmatchResultFromAPI(matchId: self.dataclass.matchId[j]){
                             returnData in
                             matchResult = returnData as! [String:Any]
@@ -78,10 +78,9 @@ class ViewController: UIViewController{
                             //print("chanpionname:\(self.dataclass.championName)")
                             self.dataclass.championName2 = ["","","","","","","","","",""]
                             self.dataclass.summonerNames2 = ["","","","","","","","","",""]
-                            //print(j)
-                            
                         }
                     }
+                    //print(self.dataclass.sort)
                     DispatchQueue.main.asyncAfter(deadline: .now()+2.0) {
                         print(self.dataclass.sort)
                         self.present(nextVC, animated: true, completion: nil)
@@ -204,18 +203,35 @@ class ViewController: UIViewController{
         
     }
     */
+    /*
+    // 同期処理
+    func processSync(Id: String,completion: @escaping (_ String:Any)->Void){
+        var result:Any?
+        // セマフォを0で初期化
+        let semaphore = DispatchSemaphore(value: 0)
+        getmatchResultFromAPI(matchId: Id){ returnData in
+            // セマフォをインクリメント（+1）
+            print(returnData)
+            result = returnData
+            semaphore.signal()
+        }
+        // セマフォをデクリメント（-1）、ただしセマフォが0の場合はsignal()の実行を待つ
+        semaphore.wait()
+        return result
+        //completion(result)
+    }*/
+    
     func getmatchResultFromAPI(matchId: String,completion: @escaping (_ String:Any)->Void){
         let semaphore = DispatchSemaphore(value: 0)
         let url: URL = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/"+matchId+"?api_key="+self.dataclass.RiotAPI)!
+        
         let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) in
             // コンソールに出力
             do{
                 let matchResult = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                //print(matchResult) // Jsonの中身を表示
-                //completion((matchResult as AnyObject).data(using: .utf8))
+                print("OK") // Jsonの中身を表示
                 completion(matchResult)
                 semaphore.signal()
-                //print(type(of: couponData))
             }catch {
                 print(error)
                 completion("")
@@ -224,9 +240,10 @@ class ViewController: UIViewController{
         })
         //semaphore.wait()
         task.resume()
-        //semaphore.wait()
-        
+        semaphore.wait(timeout: .now()+0.5)
+
     }
+    
     
     func urlEncode(beforeText: String) -> String {
         // RFC3986 に準拠
